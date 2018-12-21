@@ -78,7 +78,7 @@ mention local values like ``k``.
 
 For this problem too, there are solutions, particularly the
 [reflection][http://hackage.haskell.org/package/reflection] library, based on
-the [implicit configurations][https://dl.acm.org/citation.cfm?id=1017481] paper
+the `implicit configurations <https://dl.acm.org/citation.cfm?id=1017481>` paper
 by Kiselyov and Shan.
 
   newtype IntMod s = MkIntMod { unIntMod :: proxy s -> Int }
@@ -109,7 +109,7 @@ However, naively adding dictionary applications is dangerous for two reasons. Th
 In this case, we instantiate one ``Eq a`` instance of a function that takes two.
 However, inside ``twoEqs``, it depends on details of the constraint solver which one will be used, and so does the result of ``coherenceProblem``.
 
-The second problem is that some libraries rely on a property called [global instance uniqueness][http://blog.ezyang.com/2014/07/type-classes-confluence-coherence-global-uniqueness/].
+The second problem is that some libraries rely on a property called `global instance uniqueness <http://blog.ezyang.com/2014/07/type-classes-confluence-coherence-global-uniqueness/>`_.
 An example from the paper by Winant and Devriese is the following:
 
   insert :: Ord a ⇒ a → Set a → Set a
@@ -191,7 +191,7 @@ Hopefully this section will be empty by the time the proposal is brought to the 
 Implementation Plan
 -------------------
 
-A proof of concept implementation was implemented by Thomas Winant as [a fork of GHC][ssh://git@dnetcode.cs.kuleuven.be:2222/explicit-dictionaries-ghc.git].
+A proof of concept implementation was implemented by Thomas Winant as `a fork of GHC <ssh://git@dnetcode.cs.kuleuven.be:2222/explicit-dictionaries-ghc.git>`_.
 It is usable but quite a long way from ready.
 TODO: more details.
 
