@@ -25,9 +25,10 @@ Explicit Dictionary Applications
 This proposed GHC extension adds a form of explicit dictionary application without compromising on *global uniqueness of instances* and *coherence*.
 By exposing the *dictionary record* that is generated behind the scenes for each type class, we give users the ability to create, pass around, and modify instances, making them truly first-class.
 Together with the ability to *safely* explicitly apply such a dictionary to a function with a corresponding type class constraint, users will finally be able to use multiple, custom instances, overriding the default instance selection process.
-The goal is to be backwards compatible: users should be able to pass dictionaries for existing type classes without modifying any libraries.
+The goal is to be backwards compatible: users should be able to pass dictionaries for existing type classes without modifying any libraries and library authors can rest safe that the new extension cannot be used to break their invariants.
 
-It is based on the paper `Coherent Explicit Dictionary Application for Haskell <https://dl.acm.org/citation.cfm?id=3242752>`_ by Winant and Devriese.
+This proposal is based on the paper `Coherent Explicit Dictionary Application for Haskell <https://dl.acm.org/citation.cfm?id=3242752>`_ by Winant and Devriese.
+The main difference with the paper is a new criterion for coherence, that is practically implementable and still safe.
 The proposal consists of a number of interconnected components that we explain below.
 
 Motivation
@@ -36,7 +37,7 @@ Motivation
     TODO multiple instances, the ``Semigroup`` example?
 
 In many situations, it would be useful to be able to instantiate a type class constraint with a custom implementation of the type class.
-The obvious example that comes to mind is the many ``*By`` methods in the Prelude.
+The obvious example are the many ``*By`` methods in the Prelude.
 Consider, for example, the ``nub`` method in the Prelude.
 
 ::
@@ -51,11 +52,13 @@ The function filters duplicates from a list:
   >> nub ["abc", "def", "aBc", "abc"]
   ["abc", "def", "aBc"]
 
+However, often we want to use such a function with a non-standard notion of equality.
+For example, we may want to use a case-insensitive notion of equality when applying ``nub`` on the list ``["abc", "def", "aBc", "abc"]``.
+
 Workaround: -By variants
 ````````````````````````
 
-However, often we want to use such a function with a non-standard notion of equality.
-In this case, we can use an alternative function offered by the Prelude:
+A first workaround is to use an alternative function offered by the Prelude:
 
 ::
 
