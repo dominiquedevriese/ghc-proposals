@@ -2,12 +2,11 @@ Revise Levity Polymorphism
 ==========================
 
 .. proposal-number:: 0003
-.. trac-ticket:: Leave blank. This will eventually be filled with the Trac
-                 ticket number which will track the progress of the
-                 implementation of the feature.
+.. ticket-url:: https://phabricator.haskell.org/D2842
 .. implemented:: 8.2.1
 .. highlight:: haskell
 .. sectnum::
+   :start: 3
 .. contents::
 
 GHC 8 introduced *levity polymorphism*, where a variable can be polymorphic in
@@ -27,7 +26,7 @@ simplifying type inference a good deal, with the abolishment of sub-kinding.
 As @Iceland_jack has pointed out, levity polymorphism also allows us to
 overload operations like ``+`` over unlifted types. (See `this bug report`_.)
 
-.. _this bug report: https://ghc.haskell.org/trac/ghc/ticket/12708
+.. _this bug report: https://gitlab.haskell.org/ghc/ghc/issues/12708
 
 Further motivation is available in Simon and my `paper on the subject`_.
 
@@ -39,7 +38,7 @@ work. For example, GHC accepts this nonsense::
     type family F a where
       F Int  = (# Int, Bool #)
       F Bool = (# Int# #)
-      
+
 It's nonsense because the two return types actually have different
 representations! With the changes proposed here, such a type family would be
 safe.
@@ -59,7 +58,7 @@ Here is the current state of affairs::
                     | UnboxedTupleRep
                     | UnboxedSumRep
     type Type = TYPE PtrRepLifted
-    
+
 With these definitions, all "normal" types have type ``TYPE PtrRepLifted``
 (that is, ``Type``). Unboxed types are kinded similarly, with
 ``Int# :: TYPE IntRep`` and ``Array# :: Type -> TYPE PtrRepUnlifted``.
@@ -80,7 +79,7 @@ I propose changing this to become::
              	    | TupleRep [RuntimeRep]
              	    | SumRep [RuntimeRep]
     type Type = TYPE LiftedRep
-    
+
 Note the name changes and the new parameters to ``TupleRep`` and ``SumRep``.
 These parameters mean that different unboxed tuples/sums have *different*
 kinds. Hooray!
@@ -110,7 +109,7 @@ what is proposed here, and it would allow, for example ::
 
     foo :: forall (a :: TYPE '[IntRep, FloatRep]). a -> a
     foo x = x
-    
+
 to be instantiated, say, at both ``(# Int#, Float# #)`` and
 ``(# Int#, (# (# #), Float# #) #)``,
 because these both have the same representation. This is

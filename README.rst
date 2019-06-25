@@ -7,6 +7,14 @@ The purpose of the GHC proposal process and of
 the GHC Steering Committee, is to broaden the discussion of the evolution of
 GHC.
 
+* `≡ List of proposals under discussion <https://github.com/ghc-proposals/ghc-proposals/pulls?q=is%3Aopen+is%3Apr+no%3Alabel>`_
+* `≡ List of proposals waiting for shepherd <https://github.com/ghc-proposals/ghc-proposals/pulls?q=is%3Aopen+is%3Apr+label%3A%22Pending+shepherd+recommendation%22>`_
+* `≡ List of proposals waiting for committee decision <https://github.com/ghc-proposals/ghc-proposals/pulls?q=is%3Aopen+is%3Apr+label%3A%22Pending+committee+review%22>`_
+* `≡ List of accepted proposals <https://github.com/ghc-proposals/ghc-proposals/pulls?q=is%3Apr+label%3A%22Accepted%22>`_
+* `≡ List of rejected proposals <https://github.com/ghc-proposals/ghc-proposals/pulls?q=is%3Apr+label%3A%22Rejected%22>`_
+* `≡ List of implemented proposals <https://github.com/ghc-proposals/ghc-proposals/pulls?q=is%3Apr+label%3A%22Implemented%22>`_
+* `≡ List of all proposals <https://github.com/ghc-proposals/ghc-proposals/pulls?q=>`_
+
 What is the timeline of a proposal?
 -----------------------------------
 
@@ -34,6 +42,7 @@ What is the timeline of a proposal?
 
    `Committee process <#committee-process>`_ •
    `Review criteria <#review-criteria>`_ •
+   `≡ List of proposals waiting for shepherd <https://github.com/ghc-proposals/ghc-proposals/pulls?q=is%3Aopen+is%3Apr+label%3A%22Pending+shepherd+recommendation%22>`_ •
    `≡ List of proposals under review <https://github.com/ghc-proposals/ghc-proposals/pulls?q=is%3Aopen+is%3Apr+label%3A%22Pending+committee+review%22>`_
 
 6. Eventually, the committee rejects a proposal, or passes it back to the
@@ -43,19 +52,19 @@ What is the timeline of a proposal?
    into GHC provided it is well-engineered, well-documented, and does not
    complicate the code-base too much.
 
-   `≡ List of accepted proposals <https://github.com/ghc-proposals/ghc-proposals/pulls?q=label%3AAccepted>`_
+   `≡ List of accepted proposals <https://github.com/ghc-proposals/ghc-proposals/tree/master/proposals>`_
 
-7. If a proposal sees no activity for along time, they are marked as “dormant”.
+7. If a proposal sees no activity for along time, they are marked as “dormant”,
+   and eventually closed.
 
    `What is a dormant proposal <#what-is-a-dormant-proposal>`_ •
-   `≡ List of dormant proposals <https://github.com/ghc-proposals/ghc-proposals/pulls?q=is%3Aopen+is%3Apr+label%3A%22dormant%22>`_
+   `≡ List of dormant proposals <https://github.com/ghc-proposals/ghc-proposals/pulls?q=is%3Apr+label%3A%22dormant%22>`_
 
 
 8. Once a proposal is accepted, it still has to be implemented.  The author
    may do that, or someone else. We mark the proposal as “implemented” once it
    hits GHC’s ``master`` branch (and we are happy to be nudged to do so by
    email or GitHub issue).
-
 
    `≡ List of implemented proposals <https://github.com/ghc-proposals/ghc-proposals/pulls?q=is%3Apr+label%3A%22Implemented%22>`_
 
@@ -69,16 +78,16 @@ GHC/Haskell language, or the libraries in the ``GHC.*`` module namespace. These
 include,
 
 * A syntactic change to GHC/Haskell (e.g. the various ``ShortImports``
-  `proposals <https://ghc.haskell.org/trac/ghc/ticket/10478>`_, ``do``
-  `expressions <https://ghc.haskell.org/trac/ghc/ticket/10843>`_ without ``$``)
+  `proposals <https://gitlab.haskell.org/ghc/ghc/issues/10478>`_, ``do``
+  `expressions <https://gitlab.haskell.org/ghc/ghc/issues/10843>`_ without ``$``)
 
 * A major change to the user-visible behaviour of the compiler (e.g. the recent
-  `change <https://ghc.haskell.org/trac/ghc/ticket/11762>`_ in super-class
-  solving, and ``-Wall`` `behavior <https://ghc.haskell.org/trac/ghc/ticket/11370>`_)
+  `change <https://gitlab.haskell.org/ghc/ghc/issues/11762>`_ in super-class
+  solving, and ``-Wall`` `behavior <https://gitlab.haskell.org/ghc/ghc/issues/11370>`_)
 
 * The addition of major features to the compiler (e.g. ``-XTypeInType``, GHCi
-  `commands <https://ghc.haskell.org/trac/ghc/ticket/10874>`_,
-  `type-indexed <https://ghc.haskell.org/trac/ghc/wiki/Typeable>`_
+  `commands <https://gitlab.haskell.org/ghc/ghc/issues/10874>`_,
+  `type-indexed <https://gitlab.haskell.org/ghc/ghc/wikis/typeable>`_
   ``Typeable`` representations)
 
 Changes to the GHC API or the plugin API are not automatically within the scope
@@ -89,7 +98,7 @@ contributor to write a formal proposal.
 
 
 What should a proposal look like?
---------------------------------
+---------------------------------
 
 Each proposal document must follow the following outline. A template is provided in `proposal template <https://github.com/ghc-proposals/ghc-proposals/blob/master/proposals/0000-template.rst>`_.
 
@@ -101,6 +110,8 @@ b. *Proposed Change Specification*: Specify the change in precise and comprehens
    - the types and semantics of any new library interfaces
    - how the proposed change addresses the original problem (perhaps referring back to the example)
 
+  The change should be phrased relative to the Haskell report and/or the GHC user manual. Do not assume familiarity with the implementation, and avoid referncing the implementation.
+
 c. *Effect and Interactions*. Detail how the proposed change addresses the original problem raised in the motivation. Detail how the proposed change interacts with existing language or compiler features. Think about what surprising or problematic interactions may occur.
 
 d. *Costs and Drawbacks*. What are the drawbacks and costs to the community should this change be implemented? For example, does this make Haskell harder to learn for novice users?  Does it make Haskell code harder to read or reason about? Will the implementation be complex or invasive?
@@ -110,6 +121,8 @@ e. *Alternatives*: List alternatives to your proposed change and discuss why the
 f. *Unresolved questions*: Explicitly list any remaining issues that remain in the conceptual design and specification. Be upfront and trust that the community will help. Please do not list *implementation* issues.
 
 g. *Implementation Plan* (Optional): If accepted who will implement the change? It's quite okay to say "unknown" if you don't feel willing or able to carry out the implementation yourself.
+
+  This is also a good section to outline the changes to the implementation, or otherwise include insights that assume familiarity with the implementation.
 
 
 Note that proposals are written in `ReStructuredText
@@ -130,7 +143,7 @@ If you are unfamiliar with git and github, you can use the GitHub web interface 
 2. Change the filename and edit the proposal.
 3. Press “Commit new file”
 
-__ https://github.com/ghc-proposals/ghc-proposals/new/master?filename=proposals/new-proposal.rst;message=Start%20new%20proposal;value=Notes%20on%20reStructuredText%20-%20delete%20this%20section%20before%20submitting%0A%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%0A%0AThe%20proposals%20are%20submitted%20in%20reStructuredText%20format.%20%20To%20get%20inline%20code%2C%20enclose%20text%20in%20double%20backticks%2C%20%60%60like%20this%60%60.%20%20To%20get%20block%20code%2C%20use%20a%20double%20colon%20and%20indent%20by%20at%20least%20one%20space%0A%0A%3A%3A%0A%0A%20like%20this%0A%20and%0A%0A%20this%20too%0A%0ATo%20get%20hyperlinks%2C%20use%20backticks%2C%20angle%20brackets%2C%20and%20an%20underscore%20%60like%20this%20%3Chttp%3A//www.haskell.org/%3E%60_.%0A%0A%0AProposal%20title%0A%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%0A%0A..%20proposal-number%3A%3A%20Leave%20blank.%20This%20will%20be%20filled%20in%20when%20the%20proposal%20is%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20accepted.%0A..%20trac-ticket%3A%3A%20Leave%20blank.%20This%20will%20eventually%20be%20filled%20with%20the%20Trac%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20ticket%20number%20which%20will%20track%20the%20progress%20of%20the%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20implementation%20of%20the%20feature.%0A..%20implemented%3A%3A%20Leave%20blank.%20This%20will%20be%20filled%20in%20with%20the%20first%20GHC%20version%20which%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20implements%20the%20described%20feature.%0A..%20highlight%3A%3A%20haskell%0A..%20header%3A%3A%20This%20proposal%20is%20%60discussed%20at%20this%20pull%20request%20%3Chttps%3A//github.com/ghc-proposals/ghc-proposals/pull/0%3E%60_.%0A%20%20%20%20%20%20%20%20%20%20%20%20%2A%2AAfter%20creating%20the%20pull%20request%2C%20edit%20this%20file%20again%2C%20update%20the%0A%20%20%20%20%20%20%20%20%20%20%20%20number%20in%20the%20link%2C%20and%20delete%20this%20bold%20sentence.%2A%2A%0A..%20sectnum%3A%3A%0A..%20contents%3A%3A%0A%0AHere%20you%20should%20write%20a%20short%20abstract%20motivating%20and%20briefly%20summarizing%20the%20proposed%20change.%0A%0A%0AMotivation%0A------------%0AGive%20a%20strong%20reason%20for%20why%20the%20community%20needs%20this%20change.%20Describe%20the%20use%20case%20as%20clearly%20as%20possible%20and%20give%20an%20example.%20Explain%20how%20the%20status%20quo%20is%20insufficient%20or%20not%20ideal.%0A%0A%0AProposed%20Change%20Specification%0A-----------------------------%0ASpecify%20the%20change%20in%20precise%2C%20comprehensive%20yet%20concise%20language.%20Avoid%20words%20like%20should%20or%20could.%20Strive%20for%20a%20complete%20definition.%20Your%20specification%20may%20include%2C%0A%0A%2A%20grammar%20and%20semantics%20of%20any%20new%20syntactic%20constructs%0A%2A%20the%20types%20and%20semantics%20of%20any%20new%20library%20interfaces%0A%2A%20how%20the%20proposed%20change%20interacts%20with%20existing%20language%20or%20compiler%20features%2C%20in%20case%20that%20is%20otherwise%20ambiguous%0A%0ANote%2C%20however%2C%20that%20this%20section%20need%20not%20describe%20details%20of%20the%20implementation%20of%20the%20feature.%20The%20proposal%20is%20merely%20supposed%20to%20give%20a%20conceptual%20specification%20of%20the%20new%20feature%20and%20its%20behavior.%0A%0A%0AEffect%20and%20Interactions%0A-----------------------%0ADetail%20how%20the%20proposed%20change%20addresses%20the%20original%20problem%20raised%20in%20the%20motivation.%0A%0ADiscuss%20possibly%20contentious%20interactions%20with%20existing%20language%20or%20compiler%20features.%20%0A%0A%0ACosts%20and%20Drawbacks%0A-------------------%0AGive%20an%20estimate%20on%20development%20and%20maintenance%20costs.%20List%20how%20this%20effects%20learnability%20of%20the%20language%20for%20novice%20users.%20Define%20and%20list%20any%20remaining%20drawbacks%20that%20cannot%20be%20resolved.%0A%0A%0AAlternatives%0A------------%0AList%20existing%20alternatives%20to%20your%20proposed%20change%20as%20they%20currently%20exist%20and%20discuss%20why%20they%20are%20insufficient.%0A%0A%0AUnresolved%20questions%0A--------------------%0AExplicitly%20list%20any%20remaining%20issues%20that%20remain%20in%20the%20conceptual%20design%20and%20specification.%20Be%20upfront%20and%20trust%20that%20the%20community%20will%20help.%20Please%20do%20not%20list%20%2Aimplementation%2A%20issues.%0A%0AHopefully%20this%20section%20will%20be%20empty%20by%20the%20time%20the%20proposal%20is%20brought%20to%20the%20steering%20committee.%0A%0A%0AImplementation%20Plan%0A-------------------%0A%28Optional%29%20If%20accepted%20who%20will%20implement%20the%20change%3F%20Which%20other%20ressources%20and%20prerequisites%20are%20required%20for%20implementation%3F%0A
+__ https://github.com/ghc-proposals/ghc-proposals/new/master?filename=proposals/new-proposal.rst;message=Start%20new%20proposal;value=Notes%20on%20reStructuredText%20-%20delete%20this%20section%20before%20submitting%0A%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%0A%0AThe%20proposals%20are%20submitted%20in%20reStructuredText%20format.%20%20To%20get%20inline%20code%2C%20enclose%20text%20in%20double%20backticks%2C%20%60%60like%20this%60%60.%20%20To%20get%20block%20code%2C%20use%20a%20double%20colon%20and%20indent%20by%20at%20least%20one%20space%0A%0A%3A%3A%0A%0A%20like%20this%0A%20and%0A%0A%20this%20too%0A%0ATo%20get%20hyperlinks%2C%20use%20backticks%2C%20angle%20brackets%2C%20and%20an%20underscore%20%60like%20this%20%3Chttp%3A//www.haskell.org/%3E%60_.%0A%0A%0AProposal%20title%0A%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%0A%0A..%20proposal-number%3A%3A%20Leave%20blank.%20This%20will%20be%20filled%20in%20when%20the%20proposal%20is%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20accepted.%0A..%20ticket-url%3A%3A%20Leave%20blank.%20This%20will%20eventually%20be%20filled%20with%20the%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20ticket%20URL%20which%20will%20track%20the%20progress%20of%20the%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20implementation%20of%20the%20feature.%0A..%20implemented%3A%3A%20Leave%20blank.%20This%20will%20be%20filled%20in%20with%20the%20first%20GHC%20version%20which%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20implements%20the%20described%20feature.%0A..%20highlight%3A%3A%20haskell%0A..%20header%3A%3A%20This%20proposal%20is%20%60discussed%20at%20this%20pull%20request%20%3Chttps%3A//github.com/ghc-proposals/ghc-proposals/pull/0%3E%60_.%0A%20%20%20%20%20%20%20%20%20%20%20%20%2A%2AAfter%20creating%20the%20pull%20request%2C%20edit%20this%20file%20again%2C%20update%20the%0A%20%20%20%20%20%20%20%20%20%20%20%20number%20in%20the%20link%2C%20and%20delete%20this%20bold%20sentence.%2A%2A%0A..%20sectnum%3A%3A%0A..%20contents%3A%3A%0A%0AHere%20you%20should%20write%20a%20short%20abstract%20motivating%20and%20briefly%20summarizing%20the%20proposed%20change.%0A%0A%0AMotivation%0A------------%0AGive%20a%20strong%20reason%20for%20why%20the%20community%20needs%20this%20change.%20Describe%20the%20use%20case%20as%20clearly%20as%20possible%20and%20give%20an%20example.%20Explain%20how%20the%20status%20quo%20is%20insufficient%20or%20not%20ideal.%0A%0A%0AProposed%20Change%20Specification%0A-----------------------------%0ASpecify%20the%20change%20in%20precise%2C%20comprehensive%20yet%20concise%20language.%20Avoid%20words%20like%20should%20or%20could.%20Strive%20for%20a%20complete%20definition.%20Your%20specification%20may%20include%2C%0A%0A%2A%20grammar%20and%20semantics%20of%20any%20new%20syntactic%20constructs%0A%2A%20the%20types%20and%20semantics%20of%20any%20new%20library%20interfaces%0A%2A%20how%20the%20proposed%20change%20interacts%20with%20existing%20language%20or%20compiler%20features%2C%20in%20case%20that%20is%20otherwise%20ambiguous%0A%0ANote%2C%20however%2C%20that%20this%20section%20need%20not%20describe%20details%20of%20the%20implementation%20of%20the%20feature.%20The%20proposal%20is%20merely%20supposed%20to%20give%20a%20conceptual%20specification%20of%20the%20new%20feature%20and%20its%20behavior.%0A%0A%0AEffect%20and%20Interactions%0A-----------------------%0ADetail%20how%20the%20proposed%20change%20addresses%20the%20original%20problem%20raised%20in%20the%20motivation.%0A%0ADiscuss%20possibly%20contentious%20interactions%20with%20existing%20language%20or%20compiler%20features.%20%0A%0A%0ACosts%20and%20Drawbacks%0A-------------------%0AGive%20an%20estimate%20on%20development%20and%20maintenance%20costs.%20List%20how%20this%20effects%20learnability%20of%20the%20language%20for%20novice%20users.%20Define%20and%20list%20any%20remaining%20drawbacks%20that%20cannot%20be%20resolved.%0A%0A%0AAlternatives%0A------------%0AList%20existing%20alternatives%20to%20your%20proposed%20change%20as%20they%20currently%20exist%20and%20discuss%20why%20they%20are%20insufficient.%0A%0A%0AUnresolved%20questions%0A--------------------%0AExplicitly%20list%20any%20remaining%20issues%20that%20remain%20in%20the%20conceptual%20design%20and%20specification.%20Be%20upfront%20and%20trust%20that%20the%20community%20will%20help.%20Please%20do%20not%20list%20%2Aimplementation%2A%20issues.%0A%0AHopefully%20this%20section%20will%20be%20empty%20by%20the%20time%20the%20proposal%20is%20brought%20to%20the%20steering%20committee.%0A%0A%0AImplementation%20Plan%0A-------------------%0A%28Optional%29%20If%20accepted%20who%20will%20implement%20the%20change%3F%20Which%20other%20ressources%20and%20prerequisites%20are%20required%20for%20implementation%3F%0A
 
 .. link generated with
    python -c "import urllib;print 'https://github.com/ghc-proposals/ghc-proposals/new/master?filename=proposals/new-proposal.rst;message=%s;value=%s' % (urllib.quote('Start new proposal'), urllib.quote(file('proposals/0000-template.rst').read()))"
@@ -139,7 +152,7 @@ The pull request summary should include a brief description of your
 proposal, along with a link to the rendered view of proposal document
 in your branch. For instance,
 
-.. code-block::
+.. code-block:: md
 
     This is a proposal augmenting our existing `Typeable` mechanism with a
     variant, `Type.Reflection`, which provides a more strongly typed variant as
@@ -209,9 +222,9 @@ When the discussion has ebbed down and the author thinks the proposal is ready, 
    ``@nomeata``).
 
 `The secretary <#who-is-the-committee>`_ will then label the pull request with
-``Pending committee review`` and start the `committee process <#committee-process>`_.
-(If this does not happen within a day or two, please ping the secretary or the
-committee.)
+``Pending shepherd recommendation`` and start the `committee process
+<#committee-process>`_.  (If this does not happen within a day or two, please
+ping the secretary or the committee.)
 
 What is a dormant proposal
 --------------------------
@@ -249,41 +262,67 @@ The committee members have committed to adhere to the `Haskell committee guideli
 
 We would also like to thank our former members
 
-======================  ==================================================== 
+======================  ====================================================
 Ryan Newton             `@rrnewton <https://github.com/rrnewton>`_
 Roman Leshchinskiy      `@rleshchinskiy <https://github.com/rleshchinskiy>`_
-======================  ==================================================== 
+======================  ====================================================
 
 
 Committee process
 -----------------
 
-The committee process starts once the committee has been notified that a
-proposal is ready for decision, and takes place on the
-`ghc-steering-committee <https://mail.haskell.org/cgi-bin/mailman/listinfo/>`_
-mailing list. All interested parties are invited to follow the discussion.
+The committee process starts once the secretary has been notified that a
+proposal is ready for decision.
 
 -  The secretary nominates a member of the committee, the *shepherd*, to oversee
-   the discussion.
+   the discussion. The secretary
+
+   * labels the proposal as ``Pending shepherd recommendation``,
+   * assigns the proposal to the shepherd,
+   * drops a short mail on the mailing list, informing the committee about the
+     status change.
 
 -  Based on the proposal text (but not the GitHub commentary), the shepherd
-   makes a recommendation as to whether the proposal ought to be accepted,
-   rejected or returned for revision.
+   decides whether the proposal ought to be accepted or rejected or returned for
+   revision.
 
--  Discussion among the committee ensues on the mailing list.
-   Silence is understood as agreement with the shepherds recommendation.
+-  If the shepherd thinks the proposal ought to be rejected, they post their
+   justifications on the GitHub thread, and invite the authors to respond with
+   a rebuttal and/or refine the proposal. This continues until either
 
--  Ideally, the committee reaches consensus, as determined by the secretary or
-   the shepherd.  If consensus is elusive, then we vote, with the Simons
+   * the shepherd changes their mind and supports the proposal now,
+   * the authors withdraw their proposal,
+   * the authors indicate that they will revise the proposal to address the shepherds
+     point. The shepherd will label the pull request as
+     `Needs Revision <https://github.com/ghc-proposals/ghc-proposals/pulls?q=label%3A"Needs+revision">`_.
+   * the authors and the shepherd fully understand each other’s differing
+     positions, even if they disagree on the conclusion.
+
+-  Now the shepherd proposes to accept or reject the proposal. To do so, they
+
+   * post their recommendation, with a rationale, on the GitHub discussion thread,
+   * label the pull request as ``Pending committee review``,
+   * notify the committee by mentioning ``@ghc-proposals/ghc-steering-committee``,
+   * include the sentence “This proposal will now be discussed by the committee.
+     We welcome all authors to join the discussion, but kindly ask others to
+     refrain from posting.” in the comment
+   * drop a short mail to the mailing list informing the committee that
+     discussion has started.
+
+-  Discussion among the committee ensues on the discussion thread.
+   Silence is understood as agreement with the shepherd's recommendation.
+   Ideally, the committee reaches consensus, as determined by the secretary or
+   the shepherd. If consensus is elusive, then we vote, with the Simons
    retaining veto power.
 
--  The decision is announced, by the shepherd or the secretary, to the mailing
-   list and the pull request commentary. In particular:
+-  The decision is announced, by the shepherd or the secretary, on the Github
+   thread and the mailing list.
 
-   *  **If we say no:** The shepherd comments on the GitHub pull request with the
-      reasons for rejection.
-      The pull request will be closed, by the shepherd or the secretary, with
-      label
+   The secretary tags the pull request accordingly, and either merges or closes it.
+   In particular
+
+   *  **If we say no:**
+      The pull request will be closed and labeled
       `Rejected <https://github.com/ghc-proposals/ghc-proposals/pulls?q=label%3Arejected>`_.
 
       If the proposer wants to revise and try again, the new proposal should
@@ -292,25 +331,16 @@ mailing list. All interested parties are invited to follow the discussion.
       In the case that the proposed change has already been implemented in
       GHC, it will be reverted.
 
-   *  **If we return for revision:** If during the debate, the need for
-      substantial changes does arise, then the shepherd summarizes the
-      issues on the GitHub pull request and labels it
-      `Needs Revision <https://github.com/ghc-proposals/ghc-proposals/pulls?q=label%3A"Needs+revision">`_.
-      The author is encouraged to address the issues and re-submit.
-
    *  **If we say yes:**
-      The shepherd or the secretary announces this on the pull request
-      and labels it as
+      The pull request will be merged, numbered and labeled
       `Accepted <https://github.com/ghc-proposals/ghc-proposals/pulls?q=label%3AAccepted>`_.
-      The secretary merges the pull request and assigns the final proposal
-      number.
 
       At this point, the proposal process is technically
       complete. It is outside the purview of the committee to implement,
       oversee implementation, attract implementors, etc.
 
       The proposal authors or other implementors are encouraged to update the
-      proposal with the implementation status (i.e. trac ticket number and the
+      proposal with the implementation status (i.e. ticket URL and the
       first version of GHC implementing it.)
 
 
@@ -361,6 +391,17 @@ and any other relevant considerations appropriately.
    with other new features. In the common case the original implementor of
    a feature moves on to other things after a few years, and this
    maintenance burden falls on others.
+
+How to build the proposals?
+---------------------------
+
+The proposals can be rendered by running::
+
+   nix-shell shell.nix --run "make html"
+
+this will then create a directory ``_build`` which will contain an ``index.html``
+file and the other rendered proposals. This is useful when developing a proposal
+to ensure that your file is syntax correct.
 
 
 Questions?

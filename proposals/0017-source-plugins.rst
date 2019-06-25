@@ -2,9 +2,11 @@ Source plugins
 ==============
 
 .. proposal-number:: 17
-.. trac-ticket:: 14709
-.. implemented::
+.. ticket-url:: https://gitlab.haskell.org/ghc/ghc/issues/14709
+.. implemented:: 8.6
 .. highlight:: haskell
+.. sectnum::
+   :start: 17
 .. header:: This proposal was `discussed at this pull request <https://github.com/ghc-proposals/ghc-proposals/pull/107>`_.
 .. contents::
 
@@ -61,16 +63,16 @@ Using the ``typeCheckResultAction`` it is now easy to implement the example used
 ::
 
  import Plugins
- 
- plugin = defaultPlugin { typeCheckResultAction = \_ _ tc -> analyze (tcg_binds tc) >> return tc } 
+
+ plugin = defaultPlugin { typeCheckResultAction = \_ _ tc -> analyze (tcg_binds tc) >> return tc }
 
 The user can use the plugin for any project by altering the compilation flags to use the plugin. An example use case would be:
 
-:: 
- 
+::
+
  # write GHC_OPTIONS = -fplugin A.Plugin in the appropriate config file
  make
- 
+
 If the build environment contains widely used build tools like cabal or stack, it is trivial for the programmer to setup the GHC flags for the tools.
 
 Since using plugins does not alter the compilation process, the use of plugins does not interfere with other parts of the compiler API.
@@ -82,7 +84,7 @@ The proposal does not change the language itself and should only affect users wh
 
 Development and maintenance is cheap. The proposal only requires a few changes in the compiler. In fact I have an implementation for the basic version of this: `https://phabricator.haskell.org/D4342`.
 
-Currently using plugins forces GHC to recompile every module when plugins are used. While this is not solved it limits the usability of the source plugins as well. For more information see the `ticket <https://ghc.haskell.org/trac/ghc/ticket/7414>` about that issue.
+Currently using plugins forces GHC to recompile every module when plugins are used. While this is not solved it limits the usability of the source plugins as well. For more information see the `ticket <https://gitlab.haskell.org/ghc/ghc/issues/7414>` about that issue.
 
 Giving plugins the possibility to change inner representation of the compiler carries a certain risk of changing the behavior of the compiler in an unexpected way. However since the use of the plugins are requested by the user, it should be evident if a plugin is responsible for the incorrect behavior. This could be mitigated by performing validation after the plugin is executed.
 
@@ -90,37 +92,37 @@ Alternatives
 ------------
 
 - *Write tools that use third-party libraries for parsing and analyzing Haskell.*
-  
+
   The drawback of these solutions is that the third-party libraries might not keep up-to-date with GHC. GHC became a de-facto standard of Haskell, so it is important for the tools to keep up with GHC's development
- 
+
 - *Implement tools using the public GHC API.*
 
   The `GHC API <https://wiki.haskell.org/GHC/As_a_library>` does already provide interface for compiling Haskell modules and accessing their inner representation. Using the API is comfortable for a single Haskell module or a set of modules, but not feasible for large projects with complex build procedure. The reason is that in order to call the API, the tool's developer have to manually analyze the project and decide which Haskell modules belong to the project and how can they be compiled. Although this can be implemented for simple projects using certain libraries as a help, but for a larger project this is not feasible.
 
 - *Use frontend plugins and GHC hooks for accessing this information.*
-  
-  `Frontend plugins <https://downloads.haskell.org/~ghc/master/users-guide/extending_ghc.html#frontend-plugins>` add a new programmable major mode to GHC. When the control is passed to the plugin, the plugin's writer receives all the compiler arguments and is able to do whatever is necessary. `GHC Hooks <https://ghc.haskell.org/trac/ghc/wiki/Ghc/Hooks>` are developed for altering how the compiler performs different compilation steps. GHC hooks are primarily meant to help writing different backends for GHC and they are not exposed to the user directly.
-   
+
+  `Frontend plugins <https://downloads.haskell.org/~ghc/master/users-guide/extending_ghc.html#frontend-plugins>` add a new programmable major mode to GHC. When the control is passed to the plugin, the plugin's writer receives all the compiler arguments and is able to do whatever is necessary. `GHC Hooks <https://gitlab.haskell.org/ghc/ghc/wikis/ghc/hooks>` are developed for altering how the compiler performs different compilation steps. GHC hooks are primarily meant to help writing different backends for GHC and they are not exposed to the user directly.
+
   It is important to see that frontend plugins are the most convenient if the developer want to do something else than running the compilation pipeline normally. Frontend plugins are not convenient for running the compiler normally and accessing the inner representations. I have to note that some of the issues can be solved by `creating a wrapper for GHC <http://blog.ezyang.com/2017/02/how-to-integrate-ghc-api-programs-with-cabal/>`.
-  
+
   It would be possible to define a frontend plugin that install a ``HscFrontendHook`` to access the type checked representation. However this method is insufficient to grant access to parsed and renamed syntax tree as well as splices and interfaces is.
- 
+
 
 Unresolved questions
 --------------------
 
  - Enable changing the inner representation of the compiler?
- 
+
    This would remove safety risk from changing the representation, but would also eliminate the possibility of designing tools that extend the language with some clever manipulation of the inner representation.
- 
+
    We could also put in extra checks in case a plugin modifies some of the representation, keeping the benefits of being able to change the representation and keep the soundness of the compiling process.
- 
+
  - Implement source plugins separately
- 
+
    This may be requested out of design considerations. But since type checking plugins are added to the ``Plugin`` API, we cannot say that plugins are reserved for core-to-core transformations.
-   
+
  - Have another plugin action for compilation errors/warnings?
- 
+
    This might help writing tools that can automatically correct programmer mistakes. The ability to collect compiler errors could be useful in education as well.
 
  - Is there any additional parts of the inner representation that should be accessed via plugins?
@@ -135,6 +137,6 @@ The original version of the proposal is already implemented and can be reviewed 
 Notes
 -----
 
-The proposal is based on `Edsko's version <https://ghc.haskell.org/trac/ghc/wiki/FrontendPluginsProposal>`
+The proposal is based on `Edsko's version <https://gitlab.haskell.org/ghc/ghc/wikis/frontend-plugins-proposal>`
 
-A shorter version of the proposal is available on its `wiki page <https://ghc.haskell.org/trac/ghc/wiki/ExtendedPluginsProposal>`.
+A shorter version of the proposal is available on its `wiki page <https://gitlab.haskell.org/ghc/ghc/wikis/extended-plugins-proposal>`.

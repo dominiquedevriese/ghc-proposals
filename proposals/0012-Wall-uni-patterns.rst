@@ -2,9 +2,10 @@ Extend ``-Wall`` with ``incomplete-uni-patterns`` and ``incomplete-record-update
 ==============
 
 .. proposal-number:: 12
-.. trac-ticket:: 15656
+.. ticket-url:: https://gitlab.haskell.org/ghc/ghc/issues/15656
 .. implemented::
 .. sectnum::
+   :start: 12
 .. highlight:: haskell
 .. header:: This proposal was `discussed at this pull request <https://github.com/ghc-proposals/ghc-proposals/pull/71>`_.
 .. contents::
@@ -30,7 +31,7 @@ Motivation
     data Foo
       = Bar { barInt :: Int, barString :: String }
       | Baz
-      
+
     mySetter :: Int -> Foo -> Foo
     mySetter int foo = foo { barInt = int }
 
@@ -40,7 +41,7 @@ issues as standard.  ``-Wall`` seems like a good standard place in which to appl
 them.
 
 Historically, ``incomplete-uni-patterns`` seems to have been kept out of ``-Wall``
-by https://ghc.haskell.org/trac/ghc/ticket/4905.  It received no discussion nor
+by https://gitlab.haskell.org/ghc/ghc/issues/4905.  It received no discussion nor
 counterpoints.  Moreover, the change was made 6 years ago and standards for Haskell
 code in the wild have tightened somewhat since then.
 

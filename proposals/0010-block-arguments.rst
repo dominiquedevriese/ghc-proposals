@@ -2,10 +2,11 @@ BlockArguments Extension
 ========================
 
 .. proposal-number:: 10
-.. trac-ticket:: 10843
+.. ticket-url:: https://gitlab.haskell.org/ghc/ghc/issues/10843
 .. implemented:: 8.6.1
 .. highlight:: haskell
 .. sectnum::
+   :start: 10
 .. header:: This proposal was `discussed at this pull request <https://github.com/ghc-proposals/ghc-proposals/pull/90>`_.
 .. contents::
 

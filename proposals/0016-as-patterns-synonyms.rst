@@ -2,12 +2,13 @@ As patterns in pattern synonyms
 ==============
 
 .. proposal-number:: 16
-.. trac-ticket:: Leave blank. This will eventually be filled with the Trac
-                 ticket number which will track the progress of the
-                 implementation of the feature.
+.. ticket-url:: Leave blank. This will eventually be filled with the
+                ticket URL which will track the progress of the
+                implementation of the feature.
 .. implemented:: 8.6
 .. highlight:: haskell
 .. sectnum::
+   :start: 16
 .. header :: This proposal was `discussed at this pull request <https://github.com/ghc-proposals/ghc-proposals/pull/94>`_ and implemented in commit `411a97e2 <https://github.com/ghc/ghc/commit/411a97e2c0083529b4259d0cad8f453bae110dee>`_.
 .. contents::
 
@@ -46,7 +47,7 @@ For example, this definition would become legal.
 
 ::
 
-Currently this is rejected.  Why?  Because of worries about what this might mean (see Trac #9793) :
+Currently this is rejected.  Why?  Because of worries about what this might mean (see #9793) :
 
 ::
 

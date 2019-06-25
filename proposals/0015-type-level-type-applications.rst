@@ -2,14 +2,15 @@ Type-level type applications
 ============================
 
 .. proposal-number:: 15
-.. trac-ticket:: #12045
-.. implemented::
+.. ticket-url:: https://gitlab.haskell.org/ghc/ghc/issues/12045
+.. implemented:: 8.8
 .. highlight:: haskell
 .. header:: This proposal is `discussed at this pull request <https://github.com/ghc-proposals/ghc-proposals/pull/80>`_.
 .. sectnum::
+   :start: 15
 .. contents::
 
-.. _`#12045`: https://ghc.haskell.org/trac/ghc/ticket/12045
+.. _`#12045`: https://gitlab.haskell.org/ghc/ghc/issues/12045
 
 Allow the use of type applications at the type level. For example,
 we could write::
@@ -73,9 +74,9 @@ This new feature would work in pattern signatures (that is, a type signature asc
 
   data Ex where
     MkEx :: forall k (a :: k). Proxy (a :: k) -> Ex
-    
+
   foo (MkEx (p :: Proxy @k a)) = ... k is in scope here (along with a) ...
-  
+
 Costs and Drawbacks
 -------------------
 As a user, I was

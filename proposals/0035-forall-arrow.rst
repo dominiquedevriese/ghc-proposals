@@ -2,11 +2,12 @@ A syntax for visible dependent quantification
 =============================================
 
 .. proposal-number:: 35
-.. trac-ticket::
-.. implemented::
+.. ticket-url:: https://gitlab.haskell.org/ghc/ghc/issues/16326
+.. implemented:: 8.10
 .. highlight:: haskell
 .. header:: This proposal was `discussed at this pull request <https://github.com/ghc-proposals/ghc-proposals/pull/81>`_.
 .. sectnum::
+   :start: 35
 .. contents::
 
 GHC 8.0 has support for visible dependent quantification in kinds. For example, GHC 8 will accept ::
@@ -53,7 +54,7 @@ a type representation for some type of kind ``Type -> Type``, they could say ::
 
   foo :: TypeRepV (Type -> Type) a -> ...
 
-and GHC would easily infer that ``a`` should have kind ``Type -> Type``.  
+and GHC would easily infer that ``a`` should have kind ``Type -> Type``.
 
 Proposed Change Specification
 -----------------------------
@@ -80,11 +81,11 @@ of rejected constructs):
 * The type ascription of a ``forall``\-bound term variable in a ``RULE``::
 
     {-# RULES "blah" forall a -> id a = a #-}
-  
+
 * The type of a foreign import/export::
 
     foreign export ccall freeStablePtr :: forall a -> StablePtr a -> IO ()
-  
+
 * A type signature for a term-level variable::
 
     id :: forall a -> a -> a

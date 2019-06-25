@@ -2,11 +2,12 @@ List instances for a type in GHCi
 ==============
 
 .. proposal-number:: 41
-.. trac-ticket::
-.. implemented::
+.. ticket-url:: https://gitlab.haskell.org/ghc/ghc/issues/15610
+.. implemented:: 8.10
 .. highlight:: haskell
 .. header:: This proposal was `discussed at this pull request <https://github.com/ghc-proposals/ghc-proposals/pull/166>`_
 .. sectnum::
+   :start: 41
 .. contents::
 
 
@@ -114,7 +115,7 @@ Unresolved Questions
 Future Work
 -----------
 
-The original `Trac ticket <https://ghc.haskell.org/trac/ghc/ticket/15610>`_ also suggests some further work. There are several improvements that could be proposed. These are meant as ideas that could be fleshed out in a future proposal.
+The original `ticket <https://gitlab.haskell.org/ghc/ghc/issues/15610>`_ also suggests some further work. There are several improvements that could be proposed. These are meant as ideas that could be fleshed out in a future proposal.
 
 Negative Results
 ~~~~~~~~~~~~~~~~

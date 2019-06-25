@@ -2,12 +2,13 @@ Embrace ``Type :: Type``
 ==========================
 
 .. proposal-number:: 20
-.. trac-ticket:: #15195
+.. ticket-url:: https://gitlab.haskell.org/ghc/ghc/issues/15195
 .. implemented:: 8.6
 .. highlight:: haskell
 .. header::
    This proposal was `discussed at this pull request <https://github.com/ghc-proposals/ghc-proposals/pull/83>`_.
 .. sectnum::
+   :start: 20
 .. contents::
 
 GHC 8.0 included a major change to GHC's type system: the ``Type :: Type`` axiom.
