@@ -115,7 +115,7 @@ by Kiselyov and Shan.
   f k = reify k $ \ ps -> map (unIntMod ps) . nub . map (MkIntMod . const)
 
 While this works for our example, it comes with quite some technical complexity (phantom type variable ``s``, infrastructure like ``Reifies``, ``reify``, ``reflect``, etc.).
-Additionally, it becomes a bit annoying to use in more complex situations (e.g.\ instantiating multiple instances), but let's not go into this to avoid derailing the discussion.
+Additionally, it becomes a bit annoying to use in more complex situations (e.g. instantiating multiple instances), but let's not go into this to avoid derailing the discussion.
 
 Dictionary applications
 ```````````````````````
@@ -214,7 +214,9 @@ Explicit dictionary application
 We add a new expression of the form ``e_1 @{e_2 as C τs'}``.
 Note: in the current protype implementation, this is written as ``e1 ((e2))`` and ``e2 ((e2 :: C τs'))``, but this is not intended as a long-term choice.
 
-Note: is it necessary to require the programmer to explicitly name the type class C?
+Note: the part ``as C τs'`` in the new syntax is optional, as it can usually be inferred from the type of ``e_2``.
+It is only required for disambiguation in cases of multiple type classes with the same name but different type variables.
+
 Alternatively, we could require the type of `e_2`` to be syntactically of the form ``C.Dict ...`` and require them to use a type annotation if it isn't.
     TODO ascii typing rules?
 
@@ -229,16 +231,16 @@ It is well-typed iff:
     + the name of a variable that has been previously given a type signature
 
   - ``e_1`` is of type ``forall as. Cs => τ``
-  - one of the constraints in ``Cs`` is ``C τ'``, the remainder is ``C_rest``
+  - one of the constraints in ``Cs`` is ``C τs'``, the remainder is ``C_rest``
   - ``τs`` = ``θ(τs')`` for some substitution θ
   - ``θ(C_rest)`` are emitted as wanted constraints
-  - The dictionary application as a whole has type `θ(τ)` and emitted as a wanted constraint (TODO equality constraint).
+  - The dictionary application as a whole has type `θ(τ)`.
 
-* for one of the type variables ``a`` in ``C τs'`` (i.e. check all free variables until we find one for which all of the following hold...),
+  - ``a`` is a type variable ``C τs'`` (i.e. try all free variables until we find one for which all of the following hold...),
 
 * global uniqueness condition:
 
-  - For two fresh type variables a_1 and a_2, we have that
+  - For two fresh type variables ``a_1`` and ``a_2``, we have that
 
 ::
 
@@ -246,14 +248,14 @@ It is well-typed iff:
 
 * Coherence condition:
 
-  - For all of the constraints ``Ct`` in ``Cs`` that mention the type variable ``a``
+  - For all of the constraints ``Ct`` in ``Cs`` that mention the type variable ``a`` (including ``C τs'``)
   - ``Ct`` is a class constraint ``C' τcs`` (i.e. not an equality constraint or anything else)
-  - a type class instance for `[a -> Newtype a](C' τcs)` would be legal, particularly:
+  - type class instances for `[a -> Newtype a](C' τcs)` would be legal, particularly:
 
-    + it does not overlap with any of the instances registered for the type class ``C'``
-    + it respects the functional dependency conditions if ``C'`` has functional dependencies.
+    + they do not overlap with any of the instances registered for the type class ``C'`` or with each other
+    + they respect the functional dependency conditions if ``C'`` has functional dependencies.
 
-  - Additionally, for all constraints ``C' τcs`` in ``C_rest`` that mention the type variable ``a`` (i.e. ``Cs`` except for the constraint being instantiated)
+  - Additionally, for all constraints ``C' τcs`` in ``C_rest`` that mention the type variable ``a``
 
     + For two fresh type variables ``a_1`` and ``a_2``, we have that
 
@@ -261,14 +263,8 @@ It is well-typed iff:
 
    Coercible a_1 a_2 ||- Coercible ([a |-> a_1] C' τcs) ([a |-> a_2] C' τcs) 
 
-Note: the part ``as C τs'`` in the new syntax is optional, as it can usually be inferred from the type of ``e_2``.
-TODO required for disambiguation in cases of multiple type classes with the same name but different type variables.
-
-[NOT part of this proposal] Dictionary Instances
+[NOT part of this proposal (for now)] Dictionary Instances
 ````````````````````````````````````````````````
-
-    TODO I'm not convinced the reasons to exclude this are problematic for everyone.
-    This is a very nice and powerful feature that I would find very practical and would possibly use even more than explicit dictionary application in practice.
 
 Winant and Devriese also proposed new syntax for declarations of the form:
 
@@ -299,6 +295,9 @@ Similarly, the ``Eq MyType2`` instance would be inlined and the very long calcul
 An alternative might be to perform a kind of termination check and normalisation as part of the instance declaration, but this comes with quite a number of design choices itself, and it is unclear whether this is desirable.
 Because of these remaining questions, we propose to treat this idea as separate from this proposal and perhaps revisit it in the future, once DictionaryApplications has reached maturity.
 
+    TODO [Thomas Winant] I'm not convinced the reasons to exclude this are problematic for everyone.
+    This is a very nice and powerful feature that I would find very practical and would possibly use even more than explicit dictionary application in practice.
+
 
 Newtype Translation
 ```````````````````
@@ -323,10 +322,9 @@ The newtype translation of ``test`` looks as follows:
 
 ::
 
-  newtype Wrapper a = Wrap { unWrap :: a } deriving (Show, Monoid)
+  newtype Wrapper a = Wrap { unWrap :: a } deriving (Show)
 
-  instance Eq (Wrapper a) = trivialEq
-  instance Show a => Show (Wrapper a) = coerce (showDict :: Show.Dict a)
+  instance Eq (Wrapper a) = coerce (trivialEq :: Eq.Dict a)
 
   test :: forall c. (Show c, Monoid b) => c -> b
   test = coerce doSomething'
@@ -338,7 +336,7 @@ The newtype translation of ``test`` looks as follows:
 TODO explain what happens in more detail + role criterion
 
 Our proposed validity criteria are exactly the criteria required to make the above translated code legal (modulo the use of a dictionary instance).
-Specifically, the two coerces in the above translation are legal under the two role requirements in our proposed criteria for the dictionary application.
+Specifically, the two coerces and the ``deriving (Show)`` in the above translation are legal under the two role requirements in our proposed criteria for the dictionary application.
 Also, the instances in the translation are legal under the conditions in our proposed criteria for the dictionary application.
 
 Relation to Winant and Devriese's paper
@@ -397,22 +395,21 @@ When are the new ``C.Dict`` and ``parent1 ... parentn`` identifiers exported by 
 
 It is our goal to avoid having to modify existing code.
 To accomplish this, ideally, these identifiers should be exported by default whenever the corresponding type class is exported.
-How this can be accomplished without generating conflicts remains to be seen.
-Optionally, module authors should have the ability to explicitly *not* export them.
+How this can be accomplished without generating conflicts is an open question.
+Perhaps, module authors should have the option to explicitly *not* export them, although it does not seem like they currently have the option to not allow client modules to instantiate the class.
 
 
 Implementation Plan
 -------------------
 
 A proof of concept implementation was implemented by Thomas Winant as `a fork of GHC <https://github.com/mrBliss/ghc>`_.
-It is usable as is, but quite a long way from ready.
+It is usable as is, but quite far from ready.
 Specifically, it does not implement the coherence criterion proposed here, nor the theoretical one used in the paper, but a different one that is not sufficient.
 Additionally, when the GUI criterion is violated, the prototype implementation generates warnings, not errors.
 
-Based on the experience with the prototype implementation, we do not expect it to be a very costly implementation.
+Based on the experience with the prototype implementation, we do not expect big problems for implementing.
 Specifically, there is
 * no interaction at all with the constraint solver
-* little interaction with the role infrastructure (suitable methods for checking roles are available).
 
 Thomas Winant, who has implemented the prototype implementation as part of his PhD, is now working at `Well-Typed <https://www.well-typed.com/>`_ on different projects.
 As such, we are looking for a volunteer to bring the prototype implementation to maturity.
