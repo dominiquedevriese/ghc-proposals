@@ -24,7 +24,7 @@ Explicit Dictionary Applications
 
 This proposed GHC extension adds a form of explicit dictionary application without compromising on *global uniqueness of instances* and *coherence*.
 By exposing the *dictionary record* that is generated behind the scenes for each type class, we give users the ability to create, pass around, and modify instances, making them truly first-class.
-Together with the ability to *safely* explicitly apply such a dictionary to a function with a corresponding type class constraint, users will finally be able to use multiple, custom instances, overriding the default instance selection process.
+Together with the ability to *safely* explicitly apply such a dictionary to a function with a corresponding type class constraint, users will be able to use custom instances, overriding the default instance selection process.
 The goal is to be backwards compatible: users should be able to pass dictionaries for existing type classes without modifying any libraries and library authors can rest safe that the new extension cannot be used to break their invariants.
 
 This proposal is based on the paper `Coherent Explicit Dictionary Application for Haskell <https://dl.acm.org/citation.cfm?id=3242752>`_ by Winant and Devriese.
@@ -115,7 +115,7 @@ by Kiselyov and Shan.
   f k = reify k $ \ ps -> map (unIntMod ps) . nub . map (MkIntMod . const)
 
 While this works for our example, it comes with quite some technical complexity (phantom type variable ``s``, infrastructure like ``Reifies``, ``reify``, ``reflect``, etc.).
-Additionally, it becomes a bit annoying to use in more complex situations (but let's not go into this to avoid derailing the discussion).
+Additionally, it becomes a bit annoying to use in more complex situations (e.g.\ instantiating multiple instances), but let's not go into this to avoid derailing the discussion.
 
 Dictionary applications
 ```````````````````````
@@ -170,15 +170,7 @@ The proposal consists of a number of related additions that enable explicit dict
 
 All of the below modifications are enabled by the language extension flag ``-XDictionaryApplications``.
 The flag only has a local effect, restricted to the source file(s) for which it is enabled.
-
-    TODO can exposing the dictionaries be a local effect?
-    I think not.
-    If you enable the flag, does it mean the dictionaries in the current module are exposed or that all dictionaries are suddenly exposed?
-    If it is the former, then how do we access the dictionaries (say ``Eq``) of existing modules?
-    For each type class dictionary we want to use, we would have to modify its original module to enable the flag and to export the dictionary.
-
-    However, the *explicit dictionary application* and *dictionary instance* constructs can be hidden safely behind a flag.
-
+This includes exposing the dictionaries, both for classes defined in the current file and any imported modules.
 
 Exposing dictionaries
 `````````````````````
@@ -210,7 +202,7 @@ If ``OtherCs`` is empty, then the type is equivalent to the following data type 
     , mn :: tn
     }
 
-If ``OtherCs`` is not empty, then initially, we propose to not expose ``C.Dict``, although in principle, we could probably generate the GADT-equivalent of the above, with ``OtherCs`` as a constraint for the constructor ``C.Dict``.
+If ``OtherCs`` is not empty, then initially, we propose to not expose ``C.Dict``, although in principle, we could perhaps generate the GADT-equivalent of the above, with ``OtherCs`` as a constraint for the constructor ``C.Dict``.
 
 The names ``m1`` through ``mn`` are not exposed as accessors, as they would conflict with the type class methods.
 To access these fields, one can use pattern-matching (they are exposed as field names), or use the existing methods in combination with explicit dictionary application.
@@ -222,6 +214,8 @@ Explicit dictionary application
 We add a new expression of the form ``e_1 @{e_2 as C τs'}``.
 Note: in the current protype implementation, this is written as ``e1 ((e2))`` and ``e2 ((e2 :: C τs'))``, but this is not intended as a long-term choice.
 
+Note: is it necessary to require the programmer to explicitly name the type class C?
+Alternatively, we could require the type of `e_2`` to be syntactically of the form ``C.Dict ...`` and require them to use a type annotation if it isn't.
     TODO ascii typing rules?
 
 It is well-typed iff:
@@ -240,10 +234,15 @@ It is well-typed iff:
   - ``θ(C_rest)`` are emitted as wanted constraints
   - The dictionary application as a whole has type `θ(τ)` and emitted as a wanted constraint (TODO equality constraint).
 
-* GUI condition:
+* for one of the type variables ``a`` in ``C τs'`` (i.e. check all free variables until we find one for which all of the following hold...),
 
-  - for one of the type variables ``a`` in ``C τs'``,
-  - τ depends on ``a`` at role representational
+* global uniqueness condition:
+
+  - For two fresh type variables a_1 and a_2, we have that
+
+::
+
+      Coercible a_1 a_2 ||-  Coercible ([a |-> a_1] τ) ([a |-> a_2] τ)
 
 * Coherence condition:
 
@@ -256,7 +255,11 @@ It is well-typed iff:
 
   - Additionally, for all constraints ``C' τcs`` in ``C_rest`` that mention the type variable ``a`` (i.e. ``Cs`` except for the constraint being instantiated)
 
-    + ``C' τcs`` depends on ``a`` at role representational
+    + For two fresh type variables ``a_1`` and ``a_2``, we have that
+
+::
+
+   Coercible a_1 a_2 ||- Coercible ([a |-> a_1] C' τcs) ([a |-> a_2] C' τcs) 
 
 Note: the part ``as C τs'`` in the new syntax is optional, as it can usually be inferred from the type of ``e_2``.
 TODO required for disambiguation in cases of multiple type classes with the same name but different type variables.
@@ -320,7 +323,7 @@ The newtype translation of ``test`` looks as follows:
 
 ::
 
-  newtype Wrapper a = Wrap { unWrap :: a }
+  newtype Wrapper a = Wrap { unWrap :: a } deriving (Show, Monoid)
 
   instance Eq (Wrapper a) = trivialEq
   instance Show a => Show (Wrapper a) = coerce (showDict :: Show.Dict a)
